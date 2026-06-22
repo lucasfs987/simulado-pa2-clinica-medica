@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulado · Semiologia / Clínica Médica · PA2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#13202b;
+    --ink-soft:#42525e;
+    --paper:#f5f6f4;
+    --card:#ffffff;
+    --line:#dde2df;
+    --teal:#0f4c5c;
+    --teal-deep:#0a3640;
+    --teal-tint:#e7f0f1;
+    --gold:#c08a2d;
+    --ok:#2f7d5b;
+    --ok-tint:#e6f3ec;
+    --bad:#bb3b28;
+    --bad-tint:#fbeae6;
+    --shadow:0 1px 2px rgba(19,32,43,.06),0 8px 24px rgba(19,32,43,.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.55;
+    padding:24px 16px 64px;
+    min-height:100vh;
+  }
+  .wrap{max-width:720px;margin:0 auto}
+
+  /* ---------- header ---------- */
+  .masthead{
+    border-bottom:2px solid var(--ink);
+    padding-bottom:14px;margin-bottom:22px;
+    display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  }
+  .masthead .eyebrow{
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--teal);font-weight:700;
+  }
+  .masthead h1{
+    font-family:'Spectral',serif;font-weight:700;font-size:30px;line-height:1.05;letter-spacing:-.01em;
+  }
+  .masthead .meta{font-size:12px;color:var(--ink-soft);text-align:right}
+  .masthead .meta b{color:var(--ink);font-weight:600}
+
+  /* ---------- cards ---------- */
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow);padding:24px;
+  }
+  .lead{font-size:15px;color:var(--ink-soft);margin-bottom:22px}
+
+  /* ---------- setup form ---------- */
+  .field{margin-bottom:20px}
+  .field > label.h{
+    display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+    font-weight:700;color:var(--ink);margin-bottom:10px;
+  }
+  .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    border:1px solid var(--line);background:#fff;border-radius:999px;
+    padding:8px 14px;font-size:13px;font-weight:500;cursor:pointer;color:var(--ink-soft);
+    transition:all .12s ease;user-select:none;
+  }
+  .chip:hover{border-color:var(--teal);color:var(--teal)}
+  .chip.on{background:var(--teal);border-color:var(--teal);color:#fff}
+  .chip .n{opacity:.65;font-weight:600;margin-left:4px}
+
+  .modegrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:520px){.modegrid{grid-template-columns:1fr}}
+  .mode{
+    border:1px solid var(--line);border-radius:12px;padding:14px;cursor:pointer;background:#fff;
+    transition:all .12s ease;
+  }
+  .mode:hover{border-color:var(--teal)}
+  .mode.on{border-color:var(--teal);background:var(--teal-tint);box-shadow:inset 0 0 0 1px var(--teal)}
+  .mode .t{font-weight:700;font-size:14px;margin-bottom:3px}
+  .mode .d{font-size:12.5px;color:var(--ink-soft);line-height:1.4}
+
+  .switch{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+  .switch input{display:none}
+  .track{width:40px;height:23px;border-radius:999px;background:var(--line);position:relative;transition:.15s;flex:0 0 auto}
+  .track::after{content:"";position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:.15s}
+  .switch input:checked + .track{background:var(--teal)}
+  .switch input:checked + .track::after{transform:translateX(17px)}
+  .switch .lab{font-size:14px;font-weight:500}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;
+    border-radius:10px;padding:13px 22px;border:1px solid transparent;transition:.12s;
+  }
+  .btn-primary{background:var(--teal);color:#fff}
+  .btn-primary:hover{background:var(--teal-deep)}
+  .btn-ghost{background:#fff;color:var(--teal);border-color:var(--line)}
+  .btn-ghost:hover{border-color:var(--teal)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+
+  /* ---------- progress ---------- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;font-size:13px;color:var(--ink-soft)}
+  .topbar .tag{
+    background:var(--teal-tint);color:var(--teal);font-weight:600;font-size:11px;
+    letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:999px;
+  }
+  .topbar .count{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+  .bar{height:5px;border-radius:999px;background:var(--line);overflow:hidden;margin-bottom:22px}
+  .bar > i{display:block;height:100%;background:var(--teal);transition:width .25s ease}
+
+  /* ---------- question ---------- */
+  .qnum{font-family:'Spectral',serif;font-style:italic;color:var(--gold);font-size:15px;margin-bottom:6px}
+  .qtext{font-size:18px;font-weight:600;line-height:1.45;margin-bottom:20px}
+  .qtext .sub{display:block;font-size:14px;font-weight:400;color:var(--ink-soft);margin-top:8px;font-style:italic}
+  .answers{display:flex;flex-direction:column;gap:10px}
+  .ans{
+    display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;
+    border:1px solid var(--line);background:#fff;border-radius:11px;padding:14px 15px;
+    font-family:inherit;font-size:15px;color:var(--ink);cursor:pointer;transition:.1s;line-height:1.4;
+  }
+  .ans:hover:not(:disabled){border-color:var(--teal);background:#fbfdfd}
+  .ans .key{
+    flex:0 0 auto;width:24px;height:24px;border-radius:6px;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--ink-soft);
+    transition:.1s;
+  }
+  .ans.sel{border-color:var(--teal);background:var(--teal-tint)}
+  .ans.sel .key{background:var(--teal);border-color:var(--teal);color:#fff}
+  .ans.correct{border-color:var(--ok);background:var(--ok-tint)}
+  .ans.correct .key{background:var(--ok);border-color:var(--ok);color:#fff}
+  .ans.wrong{border-color:var(--bad);background:var(--bad-tint)}
+  .ans.wrong .key{background:var(--bad);border-color:var(--bad);color:#fff}
+  .ans:disabled{cursor:default}
+
+  .explain{
+    margin-top:16px;border-left:3px solid var(--teal);background:var(--teal-tint);
+    border-radius:0 10px 10px 0;padding:13px 16px;font-size:14px;color:var(--ink);
+  }
+  .explain.miss{border-left-color:var(--bad);background:var(--bad-tint)}
+  .explain b{font-weight:700}
+  .explain .verdict{font-weight:700;display:block;margin-bottom:3px}
+  .explain .verdict.ok{color:var(--ok)}
+  .explain .verdict.no{color:var(--bad)}
+
+  .navrow{display:flex;justify-content:space-between;align-items:center;margin-top:24px;gap:10px}
+
+  /* ---------- results ---------- */
+  .score-hero{text-align:center;padding:8px 0 18px}
+  .score-ring{
+    width:128px;height:128px;border-radius:50%;margin:0 auto 14px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:conic-gradient(var(--teal) var(--deg,0deg),var(--line) 0deg);
+  }
+  .score-ring .inner{
+    width:104px;height:104px;border-radius:50%;background:#fff;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .score-ring .pct{font-family:'Spectral',serif;font-weight:700;font-size:32px;line-height:1;color:var(--ink)}
+  .score-ring .frac{font-size:12px;color:var(--ink-soft);margin-top:3px;font-variant-numeric:tabular-nums}
+  .score-msg{font-family:'Spectral',serif;font-size:20px;font-weight:600}
+  .score-sub{font-size:14px;color:var(--ink-soft);margin-top:4px}
+
+  .bd-title{font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--ink-soft);margin:24px 0 12px}
+  .bd-row{display:flex;align-items:center;gap:12px;margin-bottom:11px;font-size:13.5px}
+  .bd-row .name{flex:0 0 42%;font-weight:500}
+  .bd-row .meter{flex:1;height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+  .bd-row .meter > i{display:block;height:100%;border-radius:999px}
+  .bd-row .frac{flex:0 0 auto;font-variant-numeric:tabular-nums;color:var(--ink-soft);font-weight:600;min-width:42px;text-align:right}
+
+  .review{margin-top:24px}
+  .review .rv{border:1px solid var(--line);border-radius:11px;padding:14px 16px;margin-bottom:10px;background:#fff}
+  .review .rv .rq{font-weight:600;font-size:14.5px;margin-bottom:8px}
+  .review .rv .ln{font-size:13.5px;display:flex;gap:7px;align-items:baseline;margin-top:3px}
+  .review .rv .ln .mk{flex:0 0 auto;font-weight:700;font-size:11px;padding:1px 6px;border-radius:5px}
+  .review .rv .ln .mk.no{background:var(--bad-tint);color:var(--bad)}
+  .review .rv .ln .mk.ok{background:var(--ok-tint);color:var(--ok)}
+  .review .rv .rex{font-size:13px;color:var(--ink-soft);margin-top:8px;font-style:italic;line-height:1.45}
+
+  .footnote{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:28px;line-height:1.5}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <div class="eyebrow">Iniciação à Prática Médica · 2º Bimestre</div>
+      <h1>Simulado de Semiologia</h1>
+    </div>
+    <div class="meta">
+      <b id="bankCount">58</b> questões · Souza Marques<br>
+      Cabeça · Tórax · Cardio · Mamas
+    </div>
+  </header>
+
+  <!-- ============ SETUP ============ -->
+  <section id="setup" class="card">
+    <p class="lead">Banco montado a partir das PA2 anteriores (2007 → 2021), sem repetições. Escolha os temas, o modo e comece a treinar.</p>
+
+    <div class="field">
+      <label class="h">Temas</label>
+      <div class="opts" id="catOpts"></div>
+    </div>
+
+    <div class="field">
+      <label class="h">Modo</label>
+      <div class="modegrid">
+        <div class="mode on" data-mode="treino">
+          <div class="t">Treino</div>
+          <div class="d">Corrige e explica a cada questão. Bom pra fixar.</div>
+        </div>
+        <div class="mode" data-mode="prova">
+          <div class="t">Prova</div>
+          <div class="d">Sem feedback até o fim. Simula a PA de verdade.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="switch">
+        <input type="checkbox" id="shuffleQ" checked>
+        <span class="track"></span>
+        <span class="lab">Embaralhar questões e alternativas</span>
+      </label>
+    </div>
+
+    <div class="field" style="margin-bottom:0">
+      <label class="h">Nº de questões</label>
+      <div class="opts" id="lenOpts">
+        <div class="chip" data-len="10">10</div>
+        <div class="chip" data-len="20">20</div>
+        <div class="chip on" data-len="all">Todas</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="startBtn">Começar simulado</button>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section id="quiz" class="card hidden">
+    <div class="topbar">
+      <span class="tag" id="qCat">—</span>
+      <span class="count"><span id="qPos">1</span> / <span id="qTotal">10</span> · acertos <b id="qScore">0</b></span>
+    </div>
+    <div class="bar"><i id="qBar" style="width:0%"></i></div>
+
+    <div class="qnum" id="qNum">Questão 1</div>
+    <div class="qtext" id="qText">—</div>
+    <div class="answers" id="qAnswers"></div>
+    <div class="explain hidden" id="qExplain"></div>
+
+    <div class="navrow">
+      <button class="btn btn-ghost" id="quitBtn">Sair</button>
+      <button class="btn btn-primary" id="nextBtn" disabled>Próxima</button>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section id="results" class="card hidden">
+    <div class="score-hero">
+      <div class="score-ring" id="ring">
+        <div class="inner">
+          <div class="pct" id="rPct">0%</div>
+          <div class="frac" id="rFrac">0 / 0</div>
+        </div>
+      </div>
+      <div class="score-msg" id="rMsg">—</div>
+      <div class="score-sub" id="rSub">—</div>
+    </div>
+
+    <div id="bdWrap">
+      <div class="bd-title">Desempenho por tema</div>
+      <div id="bdRows"></div>
+    </div>
+
+    <div id="reviewWrap" class="review">
+      <div class="bd-title">Revisão dos erros</div>
+      <div id="reviewRows"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="redoWrong">Refazer só os erros</button>
+      <button class="btn btn-ghost" id="restartBtn">Novo simulado</button>
+    </div>
+  </section>
+
+  <p class="footnote">Material de estudo a partir de provas anteriores. Confira sempre o gabarito oficial e a bibliografia da disciplina.</p>
+</div>
+
+<script>
+/* =================== BANCO DE QUESTÕES ===================
+   cada questão: { c: tema, q: enunciado, sub: contexto opcional,
+   o:[alternativas], a:índice da correta, e: explicação } */
+const BANK = [
+  // ---------- CABEÇA E CRÂNIO ----------
+  {c:"Cabeça e crânio", q:"A craniossinostose é responsável pela maioria das deformidades da calota craniana. O que vem a ser craniossinostose?",
+   o:["Fechamento precoce de suturas cranianas","Deformidade causada por trauma","Tocotraumatismo","Desvio normal da cabeça em relação à coluna vertebral"], a:0,
+   e:"É o fechamento prematuro de uma ou mais suturas cranianas, restringindo o crescimento do crânio naquele eixo."},
+  {c:"Cabeça e crânio", q:"A desidratação em lactentes contribui para aumento da mortalidade infantil. No exame da superfície do crânio, qual sinal é de grande valia para este diagnóstico?",
+   o:["Sinal de Cullen","Sinal de Musset","Fontanelas hipotensas","Fechamento precoce das suturas cranianas"], a:2,
+   e:"A depressão (hipotensão) das fontanelas reflete a perda de volume na desidratação do lactente."},
+  {c:"Cabeça e crânio", q:"Sobre o Índice Cefálico, podemos dizer que:",
+   o:["Tem maior valor antropométrico que médico","Os dolicocéfalos apresentam predomínio dos diâmetros transversos","Os braquicéfalos são indivíduos predominantemente da raça negra","Os mesocéfalos têm predomínio dos diâmetros longitudinais"], a:0,
+   e:"O índice cefálico classifica o formato do crânio, com aplicação mais antropométrica do que clínica."},
+  {c:"Cabeça e crânio", q:"Assinale a opção que NÃO é considerada causa de microcefalia:",
+   o:["Transmissão vertical de HIV","Craniossinostoses","Toxoplasmose congênita","Transmissão vertical de arboviroses (Zika)"], a:0,
+   e:"Zika, toxoplasmose e craniossinostoses cursam com microcefalia; a transmissão vertical do HIV, isoladamente, não é causa clássica."},
+  {c:"Cabeça e crânio", q:"A escafocefalia é decorrente do fechamento precoce de qual sutura craniana?",
+   o:["Sagital","Metópica","Frontal","Occipital"], a:0,
+   e:"Fechamento precoce da sutura sagital → crânio alongado no sentido ântero-posterior (escafocefalia/dolicocefalia)."},
+  {c:"Cabeça e crânio", q:"Nariz em sela, fronte olímpica, dentes de Hutchinson e molares em amora. O que poderia causar essas alterações?",
+   o:["Sífilis congênita","Toxoplasmose congênita","Transmissão vertical de arboviroses","Cromossomopatias"], a:0,
+   e:"Tríade/estigmas clássicos da sífilis congênita (Hutchinson: dentes de Hutchinson, ceratite e surdez)."},
+  {c:"Cabeça e crânio", q:"Dentre as patologias abaixo, assinale aquela em que evidenciamos macrocefalia:",
+   o:["Hidrocefalia","Craniossinostose","Toxoplasmose congênita","Zika congênita"], a:0,
+   e:"A hidrocefalia aumenta o perímetro cefálico (macrocefalia); as demais tendem à microcefalia."},
+
+  // ---------- CAVIDADE ORAL ----------
+  {c:"Cavidade oral", q:"No exame da cavidade oral de uma criança pré-escolar, identificou-se a presença de Manchas de Koplik. O que essas lesões podem significar?",
+   o:["Sinal precoce do sarampo","Sífilis congênita","Sem significado patológico","Normalmente associada a amigdalite diftérica"], a:0,
+   e:"As manchas de Koplik (pontos esbranquiçados na mucosa jugal) são sinal precoce e patognomônico do sarampo."},
+  {c:"Cavidade oral", q:"Ao identificarmos um paciente com macroglossia, devemos pensar em:",
+   o:["Mixedema","Doença de Graves","Diarreia crônica","Síndromes disabsortivas"], a:0,
+   e:"O mixedema (hipotireoidismo) causa infiltração e aumento da língua → macroglossia."},
+  {c:"Cavidade oral", q:"Numa síndrome disabsortiva podemos encontrar alterações da cavidade oral na língua. Qual poderia ser encontrada?",
+   o:["Glossite atrófica","Leucoplasia","Língua pilosa","Língua cerebriforme"], a:0,
+   e:"Carências (ex.: ferro, B12, folato) das disabsorções levam à glossite atrófica (língua lisa e despapilada)."},
+
+  // ---------- PESCOÇO / TIREOIDE ----------
+  {c:"Pescoço e tireoide", q:"No exame da glândula tireoide devemos pesquisar alterações relacionadas com os parâmetros abaixo, EXCETO:",
+   o:["Som obtido pela percussão","Consistência","Volume","Mobilidade"], a:0,
+   e:"A tireoide é avaliada por inspeção, palpação (volume, consistência, mobilidade à deglutição) e ausculta — não por percussão."},
+
+  // ---------- NARIZ / SEIOS DA FACE ----------
+  {c:"Nariz e seios da face", q:"Paciente com febre, cefaleia frontal, corrimento nasal purulento, cacosmia e tosse produtiva principalmente noturna. De qual patologia podemos suspeitar?",
+   o:["Sinusite","Pneumonia","Amigdalite","Virose respiratória"], a:0,
+   e:"Corrimento purulento + cacosmia + cefaleia frontal + tosse noturna (gotejamento pós-nasal) apontam sinusite."},
+  {c:"Nariz e seios da face", q:"Na suspeita de sinusite, qual manobra semiológica seria importante no diagnóstico?",
+   o:["Dígito-pressão dos seios da face","Exame da orofaringe","Otoscopia","Rinoscopia"], a:0,
+   e:"A dígito-pressão (dor à palpação dos seios frontais/maxilares) ajuda a confirmar o acometimento sinusal."},
+
+  // ---------- TÓRAX E PULMÃO ----------
+  {c:"Tórax e pulmão", q:"Paciente chega ao PS com intensa dispneia e tiragem intercostal. Na ausculta pulmonar há roncos e sibilos difusos. Provavelmente trata-se de:",
+   o:["Broncoespasmo","Pneumotórax","Tuberculose pulmonar","Derrame pleural"], a:0,
+   e:"Sibilos e roncos difusos + tiragem indicam obstrução de vias aéreas (broncoespasmo)."},
+  {c:"Tórax e pulmão", q:"Assinale a opção que NÃO representa sinal de condensação pulmonar:",
+   o:["Hipertimpanismo à percussão","Aumento do frêmito tóraco-vocal","Broncofonia","Sopro glótico (tubário) patológico"], a:0,
+   e:"Na condensação a percussão é maciça/submaciça (não hipertimpânica). FTV aumentado, broncofonia e sopro tubário são típicos."},
+  {c:"Tórax e pulmão", q:"Dispneia com: mediastino desviado para a direita, expansibilidade à esquerda diminuída, submacicez e macicez à percussão do hemitórax esquerdo, ausência de sons à esquerda. Hipótese mais provável?",
+   o:["Grande derrame pleural à esquerda","Pneumotórax hipertensivo à esquerda","Consolidação pneumônica à esquerda","Pneumotórax à direita"], a:0,
+   e:"Macicez + ausência de MV + desvio do mediastino para o lado oposto = grande derrame pleural à esquerda (o pneumotórax daria hipertimpanismo)."},
+  {c:"Tórax e pulmão", q:"O achado característico da ausculta pulmonar no edema agudo de pulmão é:",
+   o:["Estertores subcrepitantes","Estertores crepitantes","Sibilos","Sopro tubário"], a:0,
+   e:"O EAP cursa classicamente com estertores subcrepitantes (bolhosos), ascendentes das bases ao ápice."},
+  {c:"Tórax e pulmão", q:"São causas de diminuição LOCALIZADA da ausculta do murmúrio vesicular, EXCETO:",
+   o:["Obesidade","Atelectasia","Derrame pleural","Pneumotórax"], a:0,
+   e:"Atelectasia, derrame e pneumotórax reduzem o MV localmente; a obesidade causa diminuição difusa/global, não localizada."},
+  {c:"Tórax e pulmão", q:"A percussão do território pulmonar normal produz um som dito como:",
+   o:["Claro atimpânico (claro pulmonar)","Timpânico","Hipersonoro","Maciço"], a:0,
+   e:"O parênquima pulmonar aerado normal soa como claro pulmonar (claro atimpânico)."},
+  {c:"Tórax e pulmão", q:"Na percussão da face anterior do hemitórax direito, no 3º espaço intercostal, você encontra macicez. Como interpretar?",
+   o:["Alterado, pois o som esperado nesta região é o claro pulmonar","Normal, pois aqui já encontraríamos a loja hepática","Normal, pois apresentaria repercussões da área precordial","Alterado, pois o som esperado é o timpânico"], a:0,
+   e:"No 3º EIC direito ainda há pulmão; o esperado é claro pulmonar — a macicez é, portanto, anormal (a loja hepática vem mais abaixo)."},
+  {c:"Tórax e pulmão", q:"Respiração profunda associada à acidose metabólica, com hiperventilação para eliminar o excesso de CO₂; a frequência pode ser lenta, normal ou rápida. Trata-se da:",
+   o:["Respiração de Kussmaul","Respiração de Biot","Respiração de Cheyne-Stokes","Respiração atáxica"], a:0,
+   e:"Kussmaul = respiração ampla e profunda, compensatória da acidose metabólica (clássica na cetoacidose diabética)."},
+  {c:"Tórax e pulmão", q:"Ritmo respiratório totalmente anárquico, encontrado frequentemente nas irritações meníngeas. Trata-se de:",
+   o:["Respiração de Biot","Respiração de Kussmaul","Respiração de Cheyne-Stokes","Respiração de Litten"], a:0,
+   e:"Biot = ritmo irregular/anárquico, associado a lesões do tronco e irritação meníngea."},
+  {c:"Tórax e pulmão", q:"Ao preparar a ausculta do aparelho respiratório, marque a opção em DESACORDO com o preparo adequado:",
+   o:["Pedir ao paciente que respire com a boca fechada","Colocar o paciente preferencialmente sentado","Desnudar a região, pois roupas podem interferir","Solicitar movimentos respiratórios de média amplitude"], a:0,
+   e:"Para a ausculta o paciente deve respirar pela boca aberta, melhorando o fluxo e a audibilidade dos ruídos."},
+  {c:"Tórax e pulmão", q:"A taquipneia caracteriza-se por:",
+   o:["Respiração rápida e superficial","Ausência de respiração","Respiração irregular com longos períodos de apneia","Aumento e diminuição alternados da frequência com apneia"], a:0,
+   e:"Taquipneia = aumento da frequência respiratória, em geral com respiração superficial."},
+  {c:"Tórax e pulmão", q:"Pectorilóquia é um termo da ausculta da voz que indica:",
+   o:["Presença da voz audível na ausculta quando o paciente sussurra","Distorção da voz como o balido de cabra","Voz abafada e discretamente distorcida","Presença de rumores na ausculta pulmonar"], a:0,
+   e:"Pectorilóquia áfona = nitidez da voz sussurrada na ausculta, sinal de consolidação (o balido de cabra é a egofonia)."},
+  {c:"Tórax e pulmão", q:"No exame geral do tórax avaliamos a conformidade torácica. Um tórax 'em sino' faz suspeitar de:",
+   o:["Ascite volumosa","Enfisema pulmonar","Atelectasia","Hipertireoidismo"], a:0,
+   e:"O tórax em sino (base alargada) relaciona-se a grandes massas/ascite volumosa que empurram o diafragma."},
+  {c:"Tórax e pulmão", q:"Protusão esternal, retificação dos arcos costais e tórax com formato triangular caracterizam que tipo de tórax?",
+   o:["Em quilha (pectus carinatum)","Plano","Cifótico","Pectus escavatum"], a:0,
+   e:"Tórax em quilha / pectus carinatum = esterno protruso, dando aspecto triangular."},
+  {c:"Tórax e pulmão", q:"Conformidade torácica em 'tonel' faz suspeitar de:",
+   o:["Enfisema pulmonar","Atelectasia","Ascite volumosa","Hipertireoidismo"], a:0,
+   e:"O tórax em tonel (aumento do diâmetro ântero-posterior) é típico do enfisema/DPOC."},
+  {c:"Tórax e pulmão", q:"O desvio da traqueia é sinal importante nas grandes síndromes pulmonares. Em qual destas o desvio se dá PARA o hemitórax da lesão?",
+   o:["Atelectasia","Derrame pleural","Pneumotórax","Condensação pulmonar"], a:0,
+   e:"A atelectasia retrai e atrai estruturas para o lado da lesão; derrame e pneumotórax empurram para o lado contralateral."},
+  {c:"Tórax e pulmão", q:"Sobre o murmúrio vesicular (entrada de ar nos alvéolos), podemos afirmar que:",
+   o:["É audível predominantemente na inspiração","É audível só na expiração","É um ruído adventício","Tem frequência igual à dos sibilos"], a:0,
+   e:"O MV é um som normal, mais audível na inspiração e início da expiração."},
+  {c:"Tórax e pulmão", q:"Na pesquisa do frêmito tóraco-vocal sobre uma área de condensação pneumônica, esperamos encontrá-lo:",
+   o:["Aumentado próximo à lesão, pois a condensação amplifica a transmissão da voz","Diminuído próximo à lesão","Sem alterações","Abolido em todo o hemitórax"], a:0,
+   e:"O tecido consolidado transmite melhor as vibrações da voz → FTV aumentado sobre a condensação."},
+  {c:"Tórax e pulmão", q:"Em qual(is) tempo(s) respiratório(s) avaliamos melhor os estertores crepitantes?",
+   o:["Inspiração","Expiração","Inspiração e expiração","Apneia"], a:0,
+   e:"Os estertores crepitantes (finos) são tipicamente teleinspiratórios; já roncos/sibilos e subcrepitantes aparecem nos dois tempos."},
+
+  // ---------- CORAÇÃO E PRECÓRDIO ----------
+  {c:"Coração e precórdio", q:"A 1ª bulha cardíaca tem como elementos formadores, EXCETO:",
+   o:["Fechamento das valvas aórtica e pulmonar","Fechamento das valvas átrio-ventriculares","Início da contração ventricular","Elevação das pressões ventriculares"], a:0,
+   e:"B1 = fechamento das valvas AV (mitral e tricúspide). O fechamento das semilunares (aórtica/pulmonar) gera B2."},
+  {c:"Coração e precórdio", q:"O pediatra ausculta em um pré-escolar a presença de uma quarta bulha (B4) em exame de rotina. A melhor conduta seria:",
+   o:["Ampliar a investigação, já que a presença de B4 é sempre patológica","Acompanhar, pois não há sintomatologia","Reavaliar em 1 semana, pois pode ser transitório","Nada a fazer, pois B4 é fisiológica em crianças"], a:0,
+   e:"B4 (galope pré-sistólico) é sempre patológica e exige investigação, diferentemente da B3 que pode ser fisiológica."},
+  {c:"Coração e precórdio", q:"Aumento do retorno venoso às câmaras direitas na inspiração profunda, prolongando a contração do VD e retardando o fechamento da pulmonar. Que achado isso gera na ausculta?",
+   o:["Desdobramento fisiológico da 2ª bulha","Desdobramento fisiológico da 1ª bulha","Sopro sistólico em foco pulmonar","Terceira bulha (B3)"], a:0,
+   e:"O atraso do componente pulmonar (P2) na inspiração separa A2 de P2 → desdobramento fisiológico de B2."},
+  {c:"Coração e precórdio", q:"Ao perceber frêmitos no exame do precórdio, podemos afirmar que:",
+   o:["É a expressão palpatória do sopro cardíaco (de grande intensidade)","Indica sopro de pequena intensidade","É normalmente associado ao frêmito pleural","A pesquisa é sempre feita com a campânula sobre o precórdio"], a:0,
+   e:"O frêmito é o sopro 'palpável' — só sopros intensos (≥ 4+/6+) costumam gerar frêmito."},
+  {c:"Coração e precórdio", q:"Foi identificado ritmo de galope PRÉ-sistólico na ausculta. Podemos dizer que o paciente apresenta:",
+   o:["Presença de 4ª bulha (B4)","Presença de 3ª bulha (B3)","Sopro diastólico","Frêmito diastólico"], a:0,
+   e:"Galope pré-sistólico (atrial) = B4, que ocorre logo antes de B1."},
+  {c:"Coração e precórdio", q:"Durante um 'round' refere-se a ritmo de galope DIASTÓLICO. Sobre esse paciente, podemos dizer que apresenta:",
+   o:["Presença de 3ª bulha (B3) — ritmo em 3 tempos","Presença de 4ª bulha (B4)","Frequência cardíaca elevada","Ritmo cardíaco irregular"], a:0,
+   e:"Galope diastólico (protodiastólico/ventricular) = B3, gerando ritmo em três tempos."},
+  {c:"Coração e precórdio", q:"Na inspeção/palpação precordial encontramos ictus cordis desviado para a esquerda e para baixo. Qual a condição provável?",
+   o:["Aumento de ventrículo esquerdo","Aumento de ventrículo direito","Derrame pericárdico","Biotipo brevilíneo"], a:0,
+   e:"A hipertrofia/dilatação do VE desloca o ictus para baixo e para a esquerda."},
+  {c:"Coração e precórdio", q:"Sobre o ictus cordis, podemos afirmar que:",
+   o:["Normalmente é encoberto por uma polpa digital","Corresponde ao foco tricúspide","É o choque dos vasos da base sobre a parede torácica","Localiza-se entre o 4º e 6º EICD, a 6–10 cm da linha medioesternal"], a:0,
+   e:"O ictus normal é discreto, encoberto por ~1 polpa digital, no 4º–5º EIC esquerdo na linha hemiclavicular."},
+  {c:"Coração e precórdio", q:"Na insuficiência ventricular ESQUERDA podemos encontrar:",
+   o:["Dispneia paroxística noturna","Turgência jugular","Refluxo hepatojugular","Edema de membros inferiores"], a:0,
+   e:"A IVE causa congestão pulmonar → dispneia paroxística noturna; turgência, refluxo HJ e edema de MMII são da IVD."},
+  {c:"Coração e precórdio", q:"São sinais de insuficiência ventricular DIREITA, EXCETO:",
+   o:["Dispneia paroxística noturna","Turgência jugular","Refluxo hepatojugular","Edema de membros inferiores"], a:0,
+   e:"A dispneia paroxística noturna é sinal de congestão pulmonar (IVE), não de IVD."},
+  {c:"Coração e precórdio", q:"Na palpação cardiovascular não evidenciamos impulsões sistólicas na fúrcula esternal. Em qual situação poderíamos encontrá-las?",
+   o:["Aneurisma de aorta","Hipertrofia ventricular esquerda","Hipertrofia ventricular direita","Pericardite constritiva"], a:0,
+   e:"O aneurisma de aorta (torácica) pode gerar impulsão sistólica palpável na fúrcula/região supraesternal."},
+  {c:"Coração e precórdio", q:"Sinais de Müller, dança das carótidas, sinal de Musset e sopro diastólico de regurgitação com irradiação para o precórdio. Que patologia é essa?",
+   o:["Insuficiência aórtica","Estenose aórtica","Insuficiência mitral","Estenose pulmonar"], a:0,
+   e:"Pulsos amplos/'em martelo d'água' com seus sinais periféricos (Musset, Müller, dança das carótidas) + sopro diastólico = insuficiência aórtica."},
+  {c:"Coração e precórdio", q:"Os sopros surgem quando o fluxo laminar vira turbilhonar. Assinale a situação em que NÃO encontramos essa mudança:",
+   o:["Diminuição da velocidade sanguínea","Estreitamento valvular","Regurgitação valvular","Comunicação anormal entre câmaras"], a:0,
+   e:"Turbilhonamento exige, em geral, aumento da velocidade ou alteração de calibre/fluxo; a diminuição da velocidade não o produz."},
+  {c:"Coração e precórdio", q:"Ao auscultar um sopro cardíaco, quais aspectos devemos sempre avaliar?",
+   o:["Tempo cardíaco, intensidade, local de maior audibilidade e irradiação","Tempo cardíaco, associação à frequência e irradiação","Frequência, ritmicidade e intensidade","Local de maior audibilidade, frequência e ritmicidade"], a:0,
+   e:"Caracterização do sopro: tempo (sisto/diastólico), intensidade (cruzes), foco de maior audibilidade e irradiação."},
+  {c:"Coração e precórdio", q:"Em relação à terceira bulha cardíaca (B3), assinale a assertiva INCORRETA:",
+   o:["Ruído de baixa frequência, protossistólico","Vibração da parede ventricular pelo impacto da onda sanguínea no enchimento rápido","Comumente encontrada em crianças e gestantes","Presente na insuficiência cardíaca, insuficiência mitral e síndromes hipercinéticas"], a:0,
+   e:"B3 é proto-DIASTÓLICA (não protossistólica) — por isso essa é a afirmação incorreta. As demais estão certas."},
+  {c:"Coração e precórdio", q:"Para pesquisar a turgência jugular, como devemos posicionar o paciente?",
+   o:["Decúbito dorsal a 45°","Decúbito dorsal a 0°","Decúbito lateral direito","Posição de Pachon"], a:0,
+   e:"A turgência jugular é avaliada com o tronco elevado a 45°."},
+  {c:"Coração e precórdio", q:"O sinal de Oliver–Cardarelli (movimentos rítmicos da laringe/traqueia sincrônicos com as pulsações cardíacas) é encontrado em:",
+   o:["Aneurisma de arco aórtico","Hipertensão arterial","Insuficiência cardíaca congestiva","Pericardite constritiva"], a:0,
+   e:"O aneurisma do arco aórtico transmite a pulsação à traqueia, gerando o sinal de Oliver–Cardarelli (tug traqueal)."},
+  {c:"Coração e precórdio", q:"Relacione local de ausculta e foco cardíaco e marque a sequência correta. Ictus / 2º EICD / Apêndice xifoide / 2º EICE:",
+   o:["Mitral / Aórtico / Tricúspide / Pulmonar","Aórtico / Mitral / Pulmonar / Tricúspide","Tricúspide / Pulmonar / Mitral / Aórtico","Mitral / Pulmonar / Tricúspide / Aórtico"], a:0,
+   e:"Ictus→mitral; 2º EICD→aórtico; apêndice xifoide→tricúspide; 2º EICE→pulmonar."},
+  {c:"Coração e precórdio", q:"A gravidez é uma síndrome hipercinética e a gestante pode apresentar achados não patológicos à ausculta cardíaca. São eles:",
+   o:["Presença de B3 e sopro sistólico","Presença de B4 e sopro diastólico","Sopro diastólico e desdobramento fixo de B2","Frêmito sistólico e B4"], a:0,
+   e:"O estado hipercinético gestacional pode gerar B3 e sopro sistólico funcional, sem significado patológico."},
+
+  // ---------- MAMAS ----------
+  {c:"Mamas", q:"São etapas do exame clínico das mamas:",
+   o:["Inspeção estática e dinâmica, palpação, expressão e palpação de linfonodos","Inspeção estática, expressão, percussão e palpação de linfonodos","Inspeção dinâmica e estática, expressão, percussão e palpação","Inspeção, percussão, palpação, ausculta e expressão"], a:0,
+   e:"Sequência: inspeção estática e dinâmica → palpação → expressão papilar → palpação dos linfonodos (axilares/supraclaviculares). Não há percussão nem ausculta de rotina."},
+  {c:"Mamas", q:"No exame das mamas evidenciou-se descarga papilar sanguinolenta, sem trauma recente. Qual a primeira providência?",
+   o:["Colher amostra da secreção em esfregaço e enviar para exame citopatológico","Reavaliar em 1 semana, pois pode ser transitório","Desprezar o achado se não houver adenomegalia ou tumoração","Não considerar, pois é achado comum"], a:0,
+   e:"Descarga sanguinolenta espontânea é sinal de alerta → coletar citopatológico e prosseguir a investigação."},
+
+  // ---------- ANAMNESE / GERAL / OUTROS ----------
+  {c:"Anamnese e geral", q:"São exemplos de limitações da anamnese decorrentes do PACIENTE:",
+   o:["Estado de consciência, deficiência auditiva e falta de confiança no médico","Pressa do médico e ambiente inadequado","Letra ilegível e prontuário incompleto","Falta de tempo da consulta"], a:0,
+   e:"Limitações ligadas ao paciente: nível de consciência, déficits sensoriais (audição) e a relação de confiança com o médico."},
+  {c:"Anamnese e geral", q:"No exame da fenda palpebral, alguns achados são corriqueiros. Assinale o que NÃO corresponde a achado da fenda palpebral:",
+   o:["Tofos gotosos","Hordéolo","Calázio","Xantelasma"], a:0,
+   e:"Hordéolo, calázio e xantelasma são achados palpebrais; tofos gotosos depositam-se em articulações e pavilhão auricular."},
+  {c:"Anamnese e geral", q:"Relacione e marque a sequência correta — Sinofridia / Implantação baixa de cabelos / Diminuição da mímica facial / Ptose palpebral:",
+   sub:"I – Doença de Parkinson · II – Paralisia facial · III – Acromegalia · IV – Síndrome de Turner",
+   o:["III, IV, I e II","II, I, III e IV","IV, I, II e III","I, IV, II e III"], a:0,
+   e:"Sinofridia→acromegalia (III); implantação baixa de cabelos→Turner (IV); diminuição da mímica→Parkinson (I); ptose→paralisia facial (II)."},
+  {c:"Anamnese e geral", q:"Algumas patologias cursam com adenomegalias cervicais evidenciadas no exame do pescoço. Assinale a opção que demonstra isso:",
+   o:["Amigdalite","Hipotireoidismo","Macroglossia","Sinusite frontal isolada"], a:0,
+   e:"Processos infecciosos da orofaringe, como a amigdalite, geram linfonodomegalia cervical reacional."},
+  {c:"Anamnese e geral", q:"Paciente de 35 anos com insônia, agitação e sensação de que o coração 'vai sair pela boca', com expressão de espanto e olhos saltados. Qual patologia pode estar envolvida?",
+   o:["Hipertireoidismo","Estenose mitral","Asma brônquica","Anemia aguda"], a:0,
+   e:"Agitação, palpitações e exoftalmia ('olhos saltados') compõem o quadro de hipertireoidismo/Graves."}
+];
+
+/* =================== ESTADO =================== */
+let state = { list:[], idx:0, score:0, answers:[], mode:"treino", len:"all" };
+
+const CATS = [...new Set(BANK.map(q=>q.c))];
+let selectedCats = new Set(CATS);
+
+/* =================== SETUP UI =================== */
+const catOpts = document.getElementById('catOpts');
+function renderCats(){
+  catOpts.innerHTML = '';
+  const all = document.createElement('div');
+  all.className = 'chip' + (selectedCats.size===CATS.length ? ' on':'');
+  all.innerHTML = 'Todos <span class="n">'+BANK.length+'</span>';
+  all.onclick = ()=>{ selectedCats = new Set(CATS); renderCats(); };
+  catOpts.appendChild(all);
+  CATS.forEach(c=>{
+    const n = BANK.filter(q=>q.c===c).length;
+    const el = document.createElement('div');
+    el.className = 'chip' + (selectedCats.has(c)?' on':'');
+    el.innerHTML = c + ' <span class="n">'+n+'</span>';
+    el.onclick = ()=>{
+      if(selectedCats.has(c)) selectedCats.delete(c); else selectedCats.add(c);
+      if(selectedCats.size===0) selectedCats.add(c); // nunca vazio
+      renderCats();
+    };
+    catOpts.appendChild(el);
+  });
+}
+renderCats();
+document.getElementById('bankCount').textContent = BANK.length;
+
+document.querySelectorAll('.mode').forEach(m=>{
+  m.onclick = ()=>{
+    document.querySelectorAll('.mode').forEach(x=>x.classList.remove('on'));
+    m.classList.add('on'); state.mode = m.dataset.mode;
+  };
+});
+document.querySelectorAll('#lenOpts .chip').forEach(c=>{
+  c.onclick = ()=>{
+    document.querySelectorAll('#lenOpts .chip').forEach(x=>x.classList.remove('on'));
+    c.classList.add('on'); state.len = c.dataset.len;
+  };
+});
+
+/* =================== HELPERS =================== */
+function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function buildList(pool){
+  let list = pool.map(q=>{
+    // embaralhar alternativas mantendo rastreio da correta
+    let opts = q.o.map((text,i)=>({text, correct:i===q.a}));
+    if(document.getElementById('shuffleQ').checked) opts = shuffle(opts);
+    const aIdx = opts.findIndex(o=>o.correct);
+    return {...q, _opts:opts, _a:aIdx};
+  });
+  if(document.getElementById('shuffleQ').checked) list = shuffle(list);
+  if(state.len!=="all"){ list = list.slice(0, Math.min(+state.len, list.length)); }
+  return list;
+}
+
+/* =================== START =================== */
+document.getElementById('startBtn').onclick = ()=>{
+  const pool = BANK.filter(q=>selectedCats.has(q.c));
+  state.list = buildList(pool);
+  state.idx = 0; state.score = 0; state.answers = [];
+  show('quiz'); renderQ();
+};
+
+function show(id){
+  ['setup','quiz','results'].forEach(s=>document.getElementById(s).classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* =================== RENDER QUESTION =================== */
+const LETTERS = ['A','B','C','D','E'];
+function renderQ(){
+  const q = state.list[state.idx];
+  document.getElementById('qCat').textContent = q.c;
+  document.getElementById('qPos').textContent = state.idx+1;
+  document.getElementById('qTotal').textContent = state.list.length;
+  document.getElementById('qScore').textContent = state.score;
+  document.getElementById('qBar').style.width = ((state.idx)/state.list.length*100)+'%';
+  document.getElementById('qNum').textContent = 'Questão '+(state.idx+1);
+  document.getElementById('qText').innerHTML = q.q + (q.sub?('<span class="sub">'+q.sub+'</span>'):'');
+
+  const ansBox = document.getElementById('qAnswers');
+  ansBox.innerHTML = '';
+  q._opts.forEach((opt,i)=>{
+    const b = document.createElement('button');
+    b.className = 'ans';
+    b.innerHTML = '<span class="key">'+LETTERS[i]+'</span><span>'+opt.text+'</span>';
+    b.onclick = ()=>pick(i,b);
+    ansBox.appendChild(b);
+  });
+
+  const ex = document.getElementById('qExplain');
+  ex.classList.add('hidden'); ex.innerHTML='';
+  const nb = document.getElementById('nextBtn');
+  nb.disabled = true;
+  nb.textContent = (state.idx===state.list.length-1) ? 'Ver resultado' : 'Próxima';
+}
+
+let answered = false;
+function pick(i, btn){
+  const q = state.list[state.idx];
+  const all = [...document.querySelectorAll('#qAnswers .ans')];
+
+  if(state.mode==='prova'){
+    // só seleciona, sem revelar
+    all.forEach(a=>a.classList.remove('sel'));
+    btn.classList.add('sel');
+    state._pending = i;
+    document.getElementById('nextBtn').disabled = false;
+    return;
+  }
+
+  // modo treino: trava e revela
+  if(answered) return;
+  answered = true;
+  const correct = i===q._a;
+  if(correct) state.score++;
+  state.answers[state.idx] = {picked:i, correct};
+
+  all.forEach((a,ai)=>{
+    a.disabled = true;
+    if(ai===q._a) a.classList.add('correct');
+    if(ai===i && !correct) a.classList.add('wrong');
+  });
+
+  const ex = document.getElementById('qExplain');
+  ex.classList.remove('hidden','miss');
+  if(!correct) ex.classList.add('miss');
+  ex.innerHTML = '<span class="verdict '+(correct?'ok':'no')+'">'+
+    (correct?'Correto':'Resposta correta: '+LETTERS[q._a]+') '+q._opts[q._a].text)+'</span>'+ q.e;
+
+  document.getElementById('qScore').textContent = state.score;
+  document.getElementById('nextBtn').disabled = false;
+}
+
+document.getElementById('nextBtn').onclick = ()=>{
+  // registra no modo prova
+  if(state.mode==='prova'){
+    const q = state.list[state.idx];
+    const i = state._pending;
+    const correct = i===q._a;
+    if(correct) state.score++;
+    state.answers[state.idx] = {picked:i, correct};
+    state._pending = undefined;
+  }
+  answered = false;
+  if(state.idx < state.list.length-1){ state.idx++; renderQ(); }
+  else finish();
+};
+
+document.getElementById('quitBtn').onclick = ()=>{ if(confirm('Sair e voltar ao início? O progresso será perdido.')){ answered=false; show('setup'); } };
+
+/* =================== KEYBOARD =================== */
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('quiz').classList.contains('hidden')) return;
+  const map={'1':0,'2':1,'3':2,'4':3,'a':0,'b':1,'c':2,'d':3};
+  const k=e.key.toLowerCase();
+  if(k in map){ const all=[...document.querySelectorAll('#qAnswers .ans')]; if(all[map[k]] && !all[map[k]].disabled) all[map[k]].click(); }
+  if(e.key==='Enter' && !document.getElementById('nextBtn').disabled){ document.getElementById('nextBtn').click(); }
+});
+
+/* =================== RESULTS =================== */
+function finish(){
+  const total = state.list.length;
+  const pct = Math.round(state.score/total*100);
+  document.getElementById('rPct').textContent = pct+'%';
+  document.getElementById('rFrac').textContent = state.score+' / '+total;
+  document.getElementById('ring').style.setProperty('--deg', (pct*3.6)+'deg');
+  document.getElementById('qBar').style.width = '100%';
+
+  let msg,sub;
+  if(pct>=90){msg='Mandou bem demais.';sub='Conteúdo dominado — foca só nos pontos cegos.';}
+  else if(pct>=70){msg='Bom caminho.';sub='Base sólida; revise os temas abaixo pra fechar a nota.';}
+  else if(pct>=50){msg='Dá pra subir bastante.';sub='Revisa os erros com calma e refaz o simulado.';}
+  else {msg='Hora de revisar a teoria.';sub='Volta no material e treina por tema antes de refazer.';}
+  document.getElementById('rMsg').textContent = msg;
+  document.getElementById('rSub').textContent = sub;
+
+  // desempenho por tema
+  const byCat = {};
+  state.list.forEach((q,i)=>{
+    const a = state.answers[i];
+    byCat[q.c] = byCat[q.c] || {ok:0,n:0};
+    byCat[q.c].n++; if(a&&a.correct) byCat[q.c].ok++;
+  });
+  const bd = document.getElementById('bdRows'); bd.innerHTML='';
+  Object.entries(byCat).forEach(([c,v])=>{
+    const p = Math.round(v.ok/v.n*100);
+    const col = p>=70?'var(--ok)':p>=40?'var(--gold)':'var(--bad)';
+    const row=document.createElement('div'); row.className='bd-row';
+    row.innerHTML='<span class="name">'+c+'</span><span class="meter"><i style="width:'+p+'%;background:'+col+'"></i></span><span class="frac">'+v.ok+'/'+v.n+'</span>';
+    bd.appendChild(row);
+  });
+
+  // revisão de erros
+  const rw = document.getElementById('reviewRows'); rw.innerHTML='';
+  const wrong = state.list.map((q,i)=>({q,i})).filter(x=>state.answers[x.i] && !state.answers[x.i].correct);
+  if(wrong.length===0){
+    document.getElementById('reviewWrap').classList.add('hidden');
+  } else {
+    document.getElementById('reviewWrap').classList.remove('hidden');
+    wrong.forEach(({q,i})=>{
+      const a=state.answers[i];
+      const el=document.createElement('div'); el.className='rv';
+      el.innerHTML =
+        '<div class="rq">'+q.q+'</div>'+
+        '<div class="ln"><span class="mk no">Você</span><span>'+q._opts[a.picked].text+'</span></div>'+
+        '<div class="ln"><span class="mk ok">Certo</span><span>'+q._opts[q._a].text+'</span></div>'+
+        '<div class="rex">'+q.e+'</div>';
+      rw.appendChild(el);
+    });
+  }
+
+  document.getElementById('redoWrong').style.display = wrong.length? '' : 'none';
+  state._wrongPool = wrong.map(x=>{
+    // remontar como questão original
+    const correctText = x.q._opts[x.q._a].text;
+    const origIdx = x.q.o.indexOf(correctText);
+    return {...x.q, a: origIdx};
+  });
+
+  show('results');
+}
+
+document.getElementById('redoWrong').onclick = ()=>{
+  const pool = state._wrongPool || [];
+  if(!pool.length) return;
+  state.list = buildList(pool.map(q=>({c:q.c,q:q.q,sub:q.sub,o:q.o,a:q.a,e:q.e})));
+  state.idx=0; state.score=0; state.answers=[]; answered=false;
+  show('quiz'); renderQ();
+};
+document.getElementById('restartBtn').onclick = ()=>{ answered=false; show('setup'); };
+</script>
+</body>
+</html>
